@@ -1,0 +1,17 @@
+{
+  "audioClip": "Textes/Narration1.mp3",
+  "actions": [
+    {
+      "keyword": "feu",
+      "startTime": 12.5,
+      "endTime": 13.7,
+      "actionType": "Chaud"
+    },
+    {
+      "keyword": "glace",
+      "startTime": 24.2,
+      "endTime": 25.5,
+      "actionType": "Froid"
+    }
+  ]
+}
