@@ -5,13 +5,15 @@
       "keyword": "feu",
       "startTime": 12.5,
       "endTime": 13.7,
-      "actionType": "Chaud"
+      "actionType": "Chaud",
+      "expectedClick": "Gauche"
     },
     {
       "keyword": "glace",
       "startTime": 24.2,
       "endTime": 25.5,
-      "actionType": "Froid"
+      "actionType": "Froid",
+      "expectedClick": "Droite"
     }
   ]
 }
