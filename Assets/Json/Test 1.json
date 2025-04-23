@@ -1,18 +1,18 @@
 {
-  "audioClip": "Textes/Narration1.mp3",
+  "audioClip": "Textes/Niveau1",
   "actions": [
     {
-      "keyword": "feu",
-      "startTime": 12.5,
-      "endTime": 13.7,
-      "actionType": "Chaud",
+      "keyword": "My",
+      "startTime": 1.5,
+      "endTime": 2.5,
+      "actionType": "moi",
       "expectedClick": "Gauche"
     },
     {
-      "keyword": "glace",
-      "startTime": 24.2,
-      "endTime": 25.5,
-      "actionType": "Froid",
+      "keyword": "Hurting",
+      "startTime": 2.8,
+      "endTime": 3.5,
+      "actionType": "mal",
       "expectedClick": "Droite"
     }
   ]

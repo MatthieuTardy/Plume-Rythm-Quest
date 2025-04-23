@@ -337,7 +337,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 005e74fad9f9e2648ac8b90f5dbea730, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 0118d3b522532c54d877222c9e4c38d0, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -437,9 +437,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   narratorAudio: {fileID: 1912381827}
   sfxAudio: {fileID: 1912381830}
-  badClickSFX: {fileID: 8300000, guid: 04ef43515ba85f143a1fa11b1d142144, type: 3}
-  goodClickSFX: {fileID: 0}
+  badClickSFX: {fileID: 8300000, guid: f9ca4c201b32632409ac14936c94fb4d, type: 3}
+  goodClickSFX: {fileID: 8300000, guid: a639f70747c050d4ca71cb3f94c33d11, type: 3}
   scriptJSON: {fileID: 4900000, guid: eb6aa478a914d204bbfdd55dcebd91cf, type: 3}
+  audioClip: 
 --- !u!4 &1912381829
 Transform:
   m_ObjectHideFlags: 0

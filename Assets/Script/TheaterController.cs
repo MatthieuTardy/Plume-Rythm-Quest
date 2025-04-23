@@ -1,29 +1,47 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 public class NarratorManager : MonoBehaviour
 {
     public AudioSource narratorAudio;
+    private AudioClip narratorClip;
     public AudioSource sfxAudio; // Source pour les SFX
     public AudioClip badClickSFX;
     public AudioClip goodClickSFX;
 
+    private int totalActions = 0;
+    private int successCount = 0;
+    private int failCount = 0;
+    private bool hasFinished = false;
+
+
 
     public TextAsset scriptJSON;
     private List<RhythmAction> actions;
+    public string audioClip;
     private float timer;
 
     void Start()
     {
         RhythmActionList list = JsonUtility.FromJson<RhythmActionList>(scriptJSON.text);
         actions = list.actions;
+        totalActions = actions.Count;
+        audioClip = list.audioClip;
+
+        narratorClip = Resources.Load<AudioClip>(audioClip);
+        Debug.Log(audioClip);
+        Debug.Log(narratorClip);
+        narratorAudio.clip = narratorClip;
         narratorAudio.Play();
+        totalActions = actions.Count;
+
     }
 
     void Update()
     {
         timer = narratorAudio.time;
-
         foreach (var action in actions)
         {
             if (!action.hasTriggered && timer >= action.startTime && timer <= action.endTime)
@@ -35,19 +53,24 @@ public class NarratorManager : MonoBehaviour
                 // Le joueur a raté l’action (trop tard)
                 MissedAction(action);
             }
+            if (!hasFinished && narratorAudio.time > 20)
+            {
+                hasFinished = true;
+                EvaluatePerformance();
+            }
         }
     }
 
     void CheckInput(RhythmAction action)
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetButtonDown("Fire1"))
         {
             if (action.expectedClick == "Gauche")
                 TriggerSuccess(action);
             else
                 TriggerFail(action);
         }
-        else if (Input.GetMouseButtonDown(1))
+        else if (Input.GetButtonDown("Fire2"))
         {
             if (action.expectedClick == "Droite")
                 TriggerSuccess(action);
@@ -60,6 +83,7 @@ public class NarratorManager : MonoBehaviour
     {
         Debug.Log($"Réussi : {action.keyword} avec {action.expectedClick}");
         action.hasTriggered = true;
+        successCount++;
         PlayGoodSound();
     }
 
@@ -67,16 +91,26 @@ public class NarratorManager : MonoBehaviour
     {
         Debug.Log($"Mauvais bouton pour {action.keyword}");
         action.hasTriggered = true;
-        PlayBadSound();
+        failCount++;
+        StartCoroutine(PausePlay());
     }
 
     void MissedAction(RhythmAction action)
     {
         Debug.Log($"Action ratée pour {action.keyword}");
         action.hasTriggered = true;
-        PlayBadSound();
+        failCount++;
+        StartCoroutine(PausePlay());
     }
 
+    public IEnumerator PausePlay()
+    {
+        PlayBadSound();
+        narratorAudio.Pause();
+        yield return new WaitForSecondsRealtime(1f);
+        narratorAudio.Play();
+        yield return null;
+    }
     void PlayBadSound()
     {
         if (badClickSFX != null && sfxAudio != null)
@@ -91,21 +125,47 @@ public class NarratorManager : MonoBehaviour
             sfxAudio.PlayOneShot(goodClickSFX);
         }
     }
+
+    void EvaluatePerformance()
+    {
+        float accuracy = (float)successCount / totalActions * 100f;
+        string rank = CalculateRank(accuracy);
+
+        Debug.Log($"Fin du niveau !");
+        Debug.Log($"Réussites : {successCount} / {totalActions}");
+        Debug.Log($"Fails : {failCount}");
+        Debug.Log($"Précision : {accuracy:F1}%");
+        Debug.Log($"Rank : {rank}");
+    }
+
+    string CalculateRank(float accuracy)
+    {
+        if (accuracy == 100f) return "S+";
+        if (accuracy >= 95f) return "S";
+        if (accuracy >= 85f) return "A";
+        if (accuracy >= 70f) return "B";
+        if (accuracy >= 50f) return "C";
+        return "D";
+    }
 }
+
 
 [System.Serializable]
 public class RhythmAction
 {
+
     public string keyword;
     public float startTime;
     public float endTime;
     public string actionType;
-    public string expectedClick; // "Gauche" ou "Droite"
+    public string expectedClick;
     [System.NonSerialized] public bool hasTriggered = false;
 }
 
 [System.Serializable]
 public class RhythmActionList
 {
+    public string audioClip; // ex: "Textes/Niveau1" (sans .mp3)
     public List<RhythmAction> actions;
 }
+
