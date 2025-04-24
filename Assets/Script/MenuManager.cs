@@ -31,6 +31,8 @@ public class UIManager : MonoBehaviour
 
     private GameObject currentPanel;
 
+    public RebindManager rebindmanager;
+
     void Start()
     {
         // Lier manuellement les events
@@ -98,6 +100,9 @@ public class UIManager : MonoBehaviour
         PlayClick();
         Debug.Log("Changer Touche 1");
         // À relier au système de rebind
+        rebindmanager.StartRebindAction1();
+
+
     }
 
     public void OnClickChangerTouche2()
@@ -105,6 +110,7 @@ public class UIManager : MonoBehaviour
         PlayClick();
         Debug.Log("Changer Touche 2");
         // À relier au système de rebind
+        rebindmanager.StartRebindAction2();
     }
 
     public void OnClickBack()
