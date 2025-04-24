@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 
 public class NarratorManager : MonoBehaviour
 {
     public AudioSource narratorAudio;
+    public AudioSource tutoAudio;
     private AudioClip narratorClip;
+    private AudioClip narratorTutoClip;
     public AudioSource sfxAudio; // Source pour les SFX
     public AudioClip badClickSFX;
     public AudioClip goodClickSFX;
@@ -15,28 +16,35 @@ public class NarratorManager : MonoBehaviour
     private int successCount = 0;
     private int failCount = 0;
     private bool hasFinished = false;
+    bool tutoEnd;
 
 
 
     public TextAsset scriptJSON;
     private List<RhythmAction> actions;
     public string audioClip;
+    public string tutoClip;
     private float timer;
 
     void Start()
     {
+        tutoEnd = false;
         RhythmActionList list = JsonUtility.FromJson<RhythmActionList>(scriptJSON.text);
         actions = list.actions;
         totalActions = actions.Count;
+        tutoClip = list.tutoClip;
         audioClip = list.audioClip;
 
-        narratorClip = Resources.Load<AudioClip>(audioClip);
-        Debug.Log(audioClip);
-        Debug.Log(narratorClip);
-        narratorAudio.clip = narratorClip;
-        narratorAudio.Play();
-        totalActions = actions.Count;
 
+        narratorTutoClip = Resources.Load<AudioClip>(tutoClip);
+        narratorClip = Resources.Load<AudioClip>(audioClip);
+
+        tutoAudio.clip = narratorTutoClip;
+        narratorAudio.clip = narratorClip;
+
+        tutoAudio.Play();
+        totalActions = actions.Count;
+        
     }
 
     void Update()
@@ -53,7 +61,15 @@ public class NarratorManager : MonoBehaviour
                 // Le joueur a raté l’action (trop tard)
                 MissedAction(action);
             }
-            if (!hasFinished && narratorAudio.time > 20)
+
+            if (tutoAudio.time >= tutoAudio.clip.length || Input.GetButtonDown("Fire1")&& tutoEnd == false)
+            {
+
+                tutoAudio.Stop();
+                tutoEnd = true;
+                narratorAudio.Play();
+            }
+            if (!hasFinished && narratorAudio.time >= narratorAudio.clip.length)
             {
                 hasFinished = true;
                 EvaluatePerformance();
@@ -141,10 +157,10 @@ public class NarratorManager : MonoBehaviour
     string CalculateRank(float accuracy)
     {
         if (accuracy == 100f) return "S+";
-        if (accuracy >= 95f) return "S";
-        if (accuracy >= 85f) return "A";
-        if (accuracy >= 70f) return "B";
-        if (accuracy >= 50f) return "C";
+        if (accuracy >= 85f) return "S";
+        if (accuracy >= 75f) return "A";
+        if (accuracy >= 50f) return "B";
+        if (accuracy >= 30f) return "C";
         return "D";
     }
 }
@@ -157,7 +173,6 @@ public class RhythmAction
     public string keyword;
     public float startTime;
     public float endTime;
-    public string actionType;
     public string expectedClick;
     [System.NonSerialized] public bool hasTriggered = false;
 }
@@ -165,6 +180,7 @@ public class RhythmAction
 [System.Serializable]
 public class RhythmActionList
 {
+    public string tutoClip; // ex: "Textes/Tuto1" (sans .mp3)
     public string audioClip; // ex: "Textes/Niveau1" (sans .mp3)
     public List<RhythmAction> actions;
 }
