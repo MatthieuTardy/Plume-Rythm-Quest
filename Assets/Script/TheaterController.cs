@@ -50,30 +50,44 @@ public class NarratorManager : MonoBehaviour
     void Update()
     {
         timer = narratorAudio.time;
+
+        bool isActionWindow = false;
+
         foreach (var action in actions)
         {
             if (!action.hasTriggered && timer >= action.startTime && timer <= action.endTime)
             {
+                isActionWindow = true;
                 CheckInput(action);
             }
             else if (!action.hasTriggered && timer > action.endTime)
             {
-                // Le joueur a raté l’action (trop tard)
-                MissedAction(action);
+                if (action.tapCount >= action.requiredTaps)
+                    TriggerSuccess(action);
+                else
+                    TriggerFail(action);
             }
+        }
 
-            if (tutoAudio.time >= tutoAudio.clip.length || Input.GetButtonDown("Fire1")&& tutoEnd == false)
-            {
+        // 📌 Si on clique hors de toute fenêtre d'action → erreur
+        if ((Input.GetButtonDown("Fire1") || Input.GetButtonDown("Fire2")) && !isActionWindow)
+        {
+            Debug.Log("❌ Clic dans le vide !");
+            StartCoroutine(ClicDansLeVide());
+        }
 
-                tutoAudio.Stop();
-                tutoEnd = true;
-                narratorAudio.Play();
-            }
-            if (!hasFinished && narratorAudio.time >= narratorAudio.clip.length)
-            {
-                hasFinished = true;
-                EvaluatePerformance();
-            }
+        // 📢 Passer du tuto au narrateur
+        if ((tutoAudio.time >= tutoAudio.clip.length || Input.GetButtonDown("Fire1")) && !tutoEnd)
+        {
+            tutoAudio.Stop();
+            tutoEnd = true;
+            narratorAudio.Play();
+        }
+
+        if (!hasFinished && narratorAudio.time >= narratorAudio.clip.length)
+        {
+            hasFinished = true;
+            EvaluatePerformance();
         }
     }
 
@@ -82,19 +96,37 @@ public class NarratorManager : MonoBehaviour
         if (Input.GetButtonDown("Fire1"))
         {
             if (action.expectedClick == "Gauche")
-                TriggerSuccess(action);
+                action.tapCount++;
             else
                 TriggerFail(action);
         }
         else if (Input.GetButtonDown("Fire2"))
         {
             if (action.expectedClick == "Droite")
-                TriggerSuccess(action);
+                action.tapCount++;
             else
                 TriggerFail(action);
         }
     }
 
+    public IEnumerator ClicDansLeVide()
+    {
+        if (tutoEnd == true)
+        {
+            PlayBadSound();
+
+            if (successCount > 0)
+            {
+                successCount--;
+                failCount++; // optionnel : tu peux le retirer si tu veux pas l’ajouter ici
+            }
+
+            narratorAudio.Pause();
+            narratorAudio.Play();
+            yield return null;
+        }
+
+    }
     void TriggerSuccess(RhythmAction action)
     {
         Debug.Log($"Réussi : {action.keyword} avec {action.expectedClick}");
@@ -123,7 +155,6 @@ public class NarratorManager : MonoBehaviour
     {
         PlayBadSound();
         narratorAudio.Pause();
-        yield return new WaitForSecondsRealtime(1f);
         narratorAudio.Play();
         yield return null;
     }
@@ -174,8 +205,11 @@ public class RhythmAction
     public float startTime;
     public float endTime;
     public string expectedClick;
+    public int requiredTaps = 1; // 🔢 Combien de clics sont nécessaires
+    [System.NonSerialized] public int tapCount = 0; // ✅ Nombre de clics réalisés
     [System.NonSerialized] public bool hasTriggered = false;
 }
+
 
 [System.Serializable]
 public class RhythmActionList

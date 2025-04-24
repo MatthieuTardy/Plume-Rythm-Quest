@@ -6,31 +6,36 @@
       "keyword": "Elle",
       "startTime": 5.3,
       "endTime": 7,
-      "expectedClick": "Droite"
+      "expectedClick": "Droite",
+      "requiredTaps": 1
     },
     {
       "keyword": "Point",
       "startTime": 22.7,
       "endTime": 24.7,
-      "expectedClick": "Gauche"
+      "expectedClick": "Gauche",
+      "requiredTaps": 1
     },
     {
       "keyword": "Point",
       "startTime": 27.1,
       "endTime": 28.9,
-      "expectedClick": "Gauche"
+      "expectedClick": "Gauche",
+      "requiredTaps": 1
     },
     {
       "keyword": "Point",
       "startTime": 30.8,
       "endTime": 32.4,
-      "expectedClick": "Gauche"
+      "expectedClick": "Gauche",
+      "requiredTaps": 1
     },
     {
       "keyword": "Elle",
       "startTime": 35.2,
       "endTime": 36.6,
-      "expectedClick": "Droite"
+      "expectedClick": "Droite",
+      "requiredTaps": 1
     }
   ]
 }
