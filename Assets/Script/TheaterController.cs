@@ -1,24 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 public class NarratorManager : MonoBehaviour
 {
+    [Header("Audio")]
     public AudioSource narratorAudio;
     public AudioSource tutoAudio;
-    private AudioClip narratorClip;
-    private AudioClip narratorTutoClip;
-    public AudioSource sfxAudio; // Source pour les SFX
+    public AudioSource sfxAudio;
     public AudioClip badClickSFX;
     public AudioClip goodClickSFX;
+
+    [Header("Input Actions")]
+    public InputActionReference submitAction;  // pour "Gauche"
+    public InputActionReference cancelAction;  // pour "Droite"
+
+    private AudioClip narratorClip;
+    private AudioClip narratorTutoClip;
 
     private int totalActions = 0;
     private int successCount = 0;
     private int failCount = 0;
     private bool hasFinished = false;
-    bool tutoEnd;
-
-
+    private bool tutoEnd = false;
 
     public TextAsset scriptJSON;
     private List<RhythmAction> actions;
@@ -28,13 +33,16 @@ public class NarratorManager : MonoBehaviour
 
     void Start()
     {
-        tutoEnd = false;
+        // Activer les actions Input System
+        submitAction.action.Enable();
+        cancelAction.action.Enable();
+
+        // Charger le JSON
         RhythmActionList list = JsonUtility.FromJson<RhythmActionList>(scriptJSON.text);
         actions = list.actions;
         totalActions = actions.Count;
         tutoClip = list.tutoClip;
         audioClip = list.audioClip;
-
 
         narratorTutoClip = Resources.Load<AudioClip>(tutoClip);
         narratorClip = Resources.Load<AudioClip>(audioClip);
@@ -43,13 +51,12 @@ public class NarratorManager : MonoBehaviour
         narratorAudio.clip = narratorClip;
 
         tutoAudio.Play();
-        totalActions = actions.Count;
-        
     }
 
     void Update()
     {
         timer = narratorAudio.time;
+
         foreach (var action in actions)
         {
             if (!action.hasTriggered && timer >= action.startTime && timer <= action.endTime)
@@ -58,35 +65,35 @@ public class NarratorManager : MonoBehaviour
             }
             else if (!action.hasTriggered && timer > action.endTime)
             {
-                // Le joueur a raté l’action (trop tard)
                 MissedAction(action);
             }
+        }
 
-            if (tutoAudio.time >= tutoAudio.clip.length || Input.GetButtonDown("Fire1")&& tutoEnd == false)
-            {
+        // Passer du tuto au gameplay
+        if ((tutoAudio.time >= tutoAudio.clip.length || submitAction.action.WasPressedThisFrame()) && !tutoEnd)
+        {
+            tutoAudio.Stop();
+            tutoEnd = true;
+            narratorAudio.Play();
+        }
 
-                tutoAudio.Stop();
-                tutoEnd = true;
-                narratorAudio.Play();
-            }
-            if (!hasFinished && narratorAudio.time >= narratorAudio.clip.length)
-            {
-                hasFinished = true;
-                EvaluatePerformance();
-            }
+        if (!hasFinished && narratorAudio.time >= narratorAudio.clip.length)
+        {
+            hasFinished = true;
+            EvaluatePerformance();
         }
     }
 
     void CheckInput(RhythmAction action)
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (submitAction.action.WasPressedThisFrame())
         {
             if (action.expectedClick == "Gauche")
                 TriggerSuccess(action);
             else
                 TriggerFail(action);
         }
-        else if (Input.GetButtonDown("Fire2"))
+        else if (cancelAction.action.WasPressedThisFrame())
         {
             if (action.expectedClick == "Droite")
                 TriggerSuccess(action);
@@ -97,7 +104,7 @@ public class NarratorManager : MonoBehaviour
 
     void TriggerSuccess(RhythmAction action)
     {
-        Debug.Log($"Réussi : {action.keyword} avec {action.expectedClick}");
+        Debug.Log($"✅ Réussi : {action.keyword} avec {action.expectedClick}");
         action.hasTriggered = true;
         successCount++;
         PlayGoodSound();
@@ -105,7 +112,7 @@ public class NarratorManager : MonoBehaviour
 
     void TriggerFail(RhythmAction action)
     {
-        Debug.Log($"Mauvais bouton pour {action.keyword}");
+        Debug.Log($"❌ Mauvais bouton pour {action.keyword}");
         action.hasTriggered = true;
         failCount++;
         StartCoroutine(PausePlay());
@@ -113,7 +120,7 @@ public class NarratorManager : MonoBehaviour
 
     void MissedAction(RhythmAction action)
     {
-        Debug.Log($"Action ratée pour {action.keyword}");
+        Debug.Log($"⏱ Action ratée pour {action.keyword}");
         action.hasTriggered = true;
         failCount++;
         StartCoroutine(PausePlay());
@@ -125,21 +132,18 @@ public class NarratorManager : MonoBehaviour
         narratorAudio.Pause();
         yield return new WaitForSecondsRealtime(1f);
         narratorAudio.Play();
-        yield return null;
     }
+
     void PlayBadSound()
     {
         if (badClickSFX != null && sfxAudio != null)
-        {
             sfxAudio.PlayOneShot(badClickSFX);
-        }
     }
+
     void PlayGoodSound()
     {
-        if (badClickSFX != null && sfxAudio != null)
-        {
+        if (goodClickSFX != null && sfxAudio != null)
             sfxAudio.PlayOneShot(goodClickSFX);
-        }
     }
 
     void EvaluatePerformance()
@@ -147,11 +151,11 @@ public class NarratorManager : MonoBehaviour
         float accuracy = (float)successCount / totalActions * 100f;
         string rank = CalculateRank(accuracy);
 
-        Debug.Log($"Fin du niveau !");
+        Debug.Log($" Fin du niveau !");
         Debug.Log($"Réussites : {successCount} / {totalActions}");
-        Debug.Log($"Fails : {failCount}");
-        Debug.Log($"Précision : {accuracy:F1}%");
-        Debug.Log($"Rank : {rank}");
+        Debug.Log($" Fails : {failCount}");
+        Debug.Log($" Précision : {accuracy:F1}%");
+        Debug.Log($" Rank : {rank}");
     }
 
     string CalculateRank(float accuracy)
@@ -165,11 +169,9 @@ public class NarratorManager : MonoBehaviour
     }
 }
 
-
 [System.Serializable]
 public class RhythmAction
 {
-
     public string keyword;
     public float startTime;
     public float endTime;
@@ -180,8 +182,7 @@ public class RhythmAction
 [System.Serializable]
 public class RhythmActionList
 {
-    public string tutoClip; // ex: "Textes/Tuto1" (sans .mp3)
-    public string audioClip; // ex: "Textes/Niveau1" (sans .mp3)
+    public string tutoClip;
+    public string audioClip;
     public List<RhythmAction> actions;
 }
-

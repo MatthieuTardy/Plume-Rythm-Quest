@@ -1209,6 +1209,8 @@ MonoBehaviour:
   clickSound: {fileID: 8300000, guid: 3a5f9b9f81b07f949b86710c7367717c, type: 3}
   cancelAction: {fileID: 1362007030607491862, guid: 315beb2362e022344a984a2a44ef28a9, type: 3}
   rebindmanager: {fileID: 501646892}
+  loadSceneButton: {fileID: 1294665488}
+  sceneIndexToLoad: 1
 --- !u!4 &501646891
 Transform:
   m_ObjectHideFlags: 0
@@ -2047,9 +2049,9 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: SampleScene
+          m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
 --- !u!114 &1294665489
 MonoBehaviour:
   m_ObjectHideFlags: 0
