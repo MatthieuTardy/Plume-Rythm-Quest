@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -29,13 +30,17 @@ public class UIManager : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip clickSound;
 
-    private GameObject currentPanel;
+    [Header("Input")]
+    public InputActionReference cancelAction;
 
+    [Header("Rebind")]
     public RebindManager rebindmanager;
+
+    private GameObject currentPanel;
 
     void Start()
     {
-        // Lier manuellement les events
+        // Lier les événements des boutons
         buttonJouer.onClick.AddListener(OnClickJouer);
         buttonOptions.onClick.AddListener(OnClickOptions);
         buttonQuitter.onClick.AddListener(OnClickQuitter);
@@ -43,29 +48,40 @@ public class UIManager : MonoBehaviour
         buttonChangerTouche2.onClick.AddListener(OnClickChangerTouche2);
         buttonBack.onClick.AddListener(OnClickBack);
 
+        // Lier le bouton Cancel
+        cancelAction.action.Enable();
+        cancelAction.action.performed += OnCancel;
+
+        // Activer le menu principal au démarrage
         ShowPanel(mainMenuPanel, mainFirstSelect);
     }
 
-    void Update()
+    private void OnDestroy()
     {
-        if (Keyboard.current.escapeKey.wasPressedThisFrame || Gamepad.current?.startButton.wasPressedThisFrame == true)
+        // Clean listener
+        cancelAction.action.performed -= OnCancel;
+    }
+
+    private void OnCancel(InputAction.CallbackContext ctx)
+    {
+        if (currentPanel != mainMenuPanel)
         {
-            if (currentPanel != mainMenuPanel)
-            {
-                OnClickBack();
-            }
+            OnClickBack();
         }
     }
 
     void ShowPanel(GameObject panelToShow, GameObject buttonToSelect)
     {
+        // Désactive tous les panneaux
         mainMenuPanel.SetActive(false);
         jouerPanel.SetActive(false);
         optionsPanel.SetActive(false);
 
+        // Active le panneau demandé
         panelToShow.SetActive(true);
         currentPanel = panelToShow;
 
+        // Focus UI
         EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(buttonToSelect);
     }
@@ -76,11 +92,15 @@ public class UIManager : MonoBehaviour
             audioSource.PlayOneShot(clickSound);
     }
 
-    // --- Actions de boutons ---
+    // --- Actions des boutons principaux ---
     public void OnClickJouer()
     {
         PlayClick();
+        // Option 1 : affiche le menu de sélection (jouerPanel)
         ShowPanel(jouerPanel, jouerFirstSelect);
+
+        // Option 2 : Lancer directement une scène (décommente cette ligne si tu veux)
+        // LoadSceneByName("NomDeTaScene");
     }
 
     public void OnClickOptions()
@@ -95,27 +115,30 @@ public class UIManager : MonoBehaviour
         Application.Quit();
     }
 
+    // --- Boutons de remapping ---
     public void OnClickChangerTouche1()
     {
         PlayClick();
-        Debug.Log("Changer Touche 1");
-        // À relier au système de rebind
         rebindmanager.StartRebindAction1();
-
-
     }
 
     public void OnClickChangerTouche2()
     {
         PlayClick();
-        Debug.Log("Changer Touche 2");
-        // À relier au système de rebind
         rebindmanager.StartRebindAction2();
     }
 
+    // --- Retour au menu principal ---
     public void OnClickBack()
     {
         PlayClick();
         ShowPanel(mainMenuPanel, mainFirstSelect);
+    }
+
+    // --- Changer de scène (appelable via OnClick) ---
+    public void LoadSceneByName(string sceneName)
+    {
+        PlayClick();
+        SceneManager.LoadScene(sceneName);
     }
 }
