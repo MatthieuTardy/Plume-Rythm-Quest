@@ -1,24 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.InputSystem; // 🎯 Nouveau Input System
 
 public class NarratorManager : MonoBehaviour
 {
     public AudioSource narratorAudio;
     public AudioSource tutoAudio;
     public AudioSource musiqueAudio;
+    public AudioSource sfxAudio;
+
+    public AudioClip badClickSFX;
+    public AudioClip goodClickSFX;
+
     private AudioClip narratorClip;
     private AudioClip narratorTutoClip;
     private AudioClip musiqueClip;
-    public AudioSource sfxAudio; // Source pour les SFX
-    public AudioClip badClickSFX;
-    public AudioClip goodClickSFX;
 
     private int totalActions = 0;
     private int successCount = 0;
     private int failCount = 0;
     private bool hasFinished = false;
-    bool tutoEnd;
+    private bool tutoEnd;
 
     public AudioClip Splus;
     public AudioClip S;
@@ -29,21 +32,28 @@ public class NarratorManager : MonoBehaviour
 
     public TextAsset scriptJSON;
     private List<RhythmAction> actions;
+
     public string audioClip;
     public string tutoClip;
     public string musicClip;
     private float timer;
 
+    [Header("Input System")]
+    public InputActionReference leftClickAction;
+    public InputActionReference rightClickAction;
+
     void Start()
     {
         tutoEnd = false;
+
+        // Charger le script JSON
         RhythmActionList list = JsonUtility.FromJson<RhythmActionList>(scriptJSON.text);
         actions = list.actions;
         totalActions = actions.Count;
+
         tutoClip = list.tutoClip;
         audioClip = list.audioClip;
         musicClip = list.musiqueClip;
-
 
         narratorTutoClip = Resources.Load<AudioClip>(tutoClip);
         narratorClip = Resources.Load<AudioClip>(audioClip);
@@ -55,8 +65,17 @@ public class NarratorManager : MonoBehaviour
 
         musiqueAudio.Play();
         tutoAudio.Play();
-        totalActions = actions.Count;
-        
+
+        // Activer les actions du nouveau système
+        leftClickAction.action.Enable();
+        rightClickAction.action.Enable();
+    }
+
+    void OnDisable()
+    {
+        // Bonnes pratiques : désactiver proprement
+        leftClickAction.action.Disable();
+        rightClickAction.action.Disable();
     }
 
     void Update()
@@ -81,15 +100,15 @@ public class NarratorManager : MonoBehaviour
             }
         }
 
-        // Si on clique hors de toute fenêtre d'action → erreur
-        if ((Input.GetButtonDown("Fire1") || Input.GetButtonDown("Fire2")) && !isActionWindow)
+        // ❌ Clique dans le vide
+        if ((leftClickAction.action.WasPerformedThisFrame() || rightClickAction.action.WasPerformedThisFrame()) && !isActionWindow)
         {
             Debug.Log("Clic dans le vide !");
             StartCoroutine(ClicDansLeVide());
         }
 
-        // Passer du tuto au narrateur
-        if ((tutoAudio.time >= tutoAudio.clip.length || Input.GetButtonDown("Fire1")) && !tutoEnd)
+        // 🎓 Passage du tuto à la narration
+        if ((tutoAudio.time >= tutoAudio.clip.length || leftClickAction.action.WasPerformedThisFrame()) && !tutoEnd)
         {
             tutoAudio.Stop();
             tutoEnd = true;
@@ -105,14 +124,14 @@ public class NarratorManager : MonoBehaviour
 
     void CheckInput(RhythmAction action)
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (leftClickAction.action.WasPerformedThisFrame())
         {
             if (action.expectedClick == "Gauche")
                 action.tapCount++;
             else
                 TriggerFail(action);
         }
-        else if (Input.GetButtonDown("Fire2"))
+        else if (rightClickAction.action.WasPerformedThisFrame())
         {
             if (action.expectedClick == "Droite")
                 action.tapCount++;
@@ -123,22 +142,22 @@ public class NarratorManager : MonoBehaviour
 
     public IEnumerator ClicDansLeVide()
     {
-        if (tutoEnd == true)
+        if (tutoEnd)
         {
             PlayBadSound();
 
             if (successCount > 0)
             {
                 successCount--;
-                failCount++; // optionnel : tu peux le retirer si tu veux pas l’ajouter ici
+                failCount++;
             }
 
             narratorAudio.Pause();
             narratorAudio.Play();
             yield return null;
         }
-
     }
+
     void TriggerSuccess(RhythmAction action)
     {
         Debug.Log($"Réussi : {action.keyword} avec {action.expectedClick}");
@@ -155,14 +174,6 @@ public class NarratorManager : MonoBehaviour
         StartCoroutine(PausePlay());
     }
 
-    void MissedAction(RhythmAction action)
-    {
-        Debug.Log($"Action ratée pour {action.keyword}");
-        action.hasTriggered = true;
-        failCount++;
-        StartCoroutine(PausePlay());
-    }
-
     public IEnumerator PausePlay()
     {
         PlayBadSound();
@@ -170,6 +181,7 @@ public class NarratorManager : MonoBehaviour
         narratorAudio.Play();
         yield return null;
     }
+
     void PlayBadSound()
     {
         if (badClickSFX != null && sfxAudio != null)
@@ -177,9 +189,10 @@ public class NarratorManager : MonoBehaviour
             sfxAudio.PlayOneShot(badClickSFX);
         }
     }
+
     void PlayGoodSound()
     {
-        if (badClickSFX != null && sfxAudio != null)
+        if (goodClickSFX != null && sfxAudio != null)
         {
             sfxAudio.PlayOneShot(goodClickSFX);
         }
@@ -193,27 +206,27 @@ public class NarratorManager : MonoBehaviour
 
     void CalculateRank(float accuracy)
     {
-        if (accuracy == 100f) 
+        if (accuracy == 100f)
         {
             narratorAudio.clip = Splus;
             narratorAudio.Play();
         }
-        if (accuracy >= 85f)
+        else if (accuracy >= 85f)
         {
             narratorAudio.clip = S;
             narratorAudio.Play();
         }
-        if (accuracy >= 75f)
+        else if (accuracy >= 75f)
         {
             narratorAudio.clip = A;
             narratorAudio.Play();
         }
-        if (accuracy >= 50f)
+        else if (accuracy >= 50f)
         {
             narratorAudio.clip = B;
             narratorAudio.Play();
         }
-        if (accuracy >= 30f)
+        else if (accuracy >= 30f)
         {
             narratorAudio.clip = C;
             narratorAudio.Play();
@@ -226,27 +239,25 @@ public class NarratorManager : MonoBehaviour
     }
 }
 
+// 📦 Classes de données
 
 [System.Serializable]
 public class RhythmAction
 {
-
     public string keyword;
     public float startTime;
     public float endTime;
     public string expectedClick;
-    public int requiredTaps = 1; // 🔢 Combien de clics sont nécessaires
-    [System.NonSerialized] public int tapCount = 0; // ✅ Nombre de clics réalisés
+    public int requiredTaps = 1;
+    [System.NonSerialized] public int tapCount = 0;
     [System.NonSerialized] public bool hasTriggered = false;
 }
-
 
 [System.Serializable]
 public class RhythmActionList
 {
-    public string tutoClip; // ex: "Textes/Tuto1" (sans .mp3)
-    public string audioClip; // ex: "Textes/Niveau1" (sans .mp3)
-    public string musiqueClip; // ex: "Textes/MusiqueLV1" (sans .mp3)
+    public string tutoClip;
+    public string audioClip;
+    public string musiqueClip;
     public List<RhythmAction> actions;
 }
-
