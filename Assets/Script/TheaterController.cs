@@ -26,6 +26,9 @@ public class NarratorManager : MonoBehaviour
     private bool hasFinished = false;
     private bool tutoEnd;
 
+    [SerializeField] private SwitchSharedMaterialColor switcher;
+    [SerializeField] private SwitchSharedMaterialColor switcher2;
+
     public AudioClip Splus;
     public AudioClip S;
     public AudioClip A;
@@ -50,6 +53,7 @@ public class NarratorManager : MonoBehaviour
     [Header("Input System")]
     public InputActionReference leftClickAction;
     public InputActionReference rightClickAction;
+
 
     void Start()
     {
@@ -111,6 +115,7 @@ public class NarratorManager : MonoBehaviour
                     TriggerSuccess(action);
                 else
                     TriggerFail(action);
+
             }
         }
 
@@ -134,7 +139,11 @@ public class NarratorManager : MonoBehaviour
             hasFinished = true;
             EvaluatePerformance();
         }
+
+
+
     }
+
 
     void CheckInput(RhythmAction action)
     {
@@ -166,6 +175,8 @@ public class NarratorManager : MonoBehaviour
     {
         if (tutoEnd)
         {
+            switcher.SwitchColor();
+            switcher2.SwitchColor();
             PlayBadSound();
 
             if (successCount > 0)
@@ -189,6 +200,8 @@ public class NarratorManager : MonoBehaviour
         Debug.Log($"Mauvais bouton pour {action.keyword}");
         action.hasTriggered = true;
         failCount++;
+        switcher.SwitchColor();
+        switcher2.SwitchColor();
         StartCoroutine(PausePlay());
     }
 
@@ -214,6 +227,12 @@ public class NarratorManager : MonoBehaviour
     {
         if (goodClickSFX != null && sfxAudio != null)
         {
+            IdleMotionDelayedStart[] allIdles = FindObjectsOfType<IdleMotionDelayedStart>();
+
+            foreach (IdleMotionDelayedStart idle in allIdles)
+            {
+                idle.BoostFrequency(); // Boost chaque script trouvé
+            }
             sfxAudio.pitch = Random.Range(0.90f, 1.10f);
             sfxAudio.PlayOneShot(goodClickSFX);
         }

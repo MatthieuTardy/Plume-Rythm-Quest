@@ -1,6 +1,6 @@
 {
-  "tutoClip": "Textes/Tuto2",
-  "audioClip": "Textes/Niveau2",
+  "tutoClip": "Textes/TutoLV2",
+  "audioClip": "Textes/Niveau4",
   "musiqueClip": "Textes/MusiqueLV1",
   "actions": [
     {

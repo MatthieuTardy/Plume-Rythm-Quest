@@ -1077,6 +1077,7 @@ GameObject:
   - component: {fileID: 445717981}
   - component: {fileID: 445717980}
   - component: {fileID: 445717979}
+  - component: {fileID: 445717983}
   m_Layer: 5
   m_Name: Scene 2
   m_TagString: Untagged
@@ -1116,7 +1117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 749b3825b5f06d44e81eec7631475550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  voiceClip: {fileID: 8300000, guid: d470a0232aa9afe49b21b4a15fc99bc3, type: 3}
+  voiceClip: {fileID: 8300000, guid: 076ca6becf70cd04887b117041fdd50c, type: 3}
   audioSource: {fileID: 501646888}
   hoverClip: {fileID: 8300000, guid: a2c34e3517146b74bbf05abb95492707, type: 3}
 --- !u!114 &445717980
@@ -1162,7 +1163,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 445717981}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 445717983}
+        m_TargetAssemblyTypeName: SceneButton, Assembly-CSharp
+        m_MethodName: LoadScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &445717981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1201,6 +1214,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 445717977}
   m_CullTransparentMesh: 1
+--- !u!114 &445717983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 445717977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f37aabc475b3cd4f9a6d49e863b65cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneToLoad: Niveau2
 --- !u!1 &501646887
 GameObject:
   m_ObjectHideFlags: 0
@@ -1434,7 +1460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 749b3825b5f06d44e81eec7631475550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  voiceClip: {fileID: 8300000, guid: e2d972346d3c41543962ca1d9132033f, type: 3}
+  voiceClip: {fileID: 8300000, guid: 4bb922fdd6f198849bafe9a4ffd4c56c, type: 3}
   audioSource: {fileID: 501646888}
   hoverClip: {fileID: 8300000, guid: a2c34e3517146b74bbf05abb95492707, type: 3}
 --- !u!114 &542477660
@@ -1543,7 +1569,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f37aabc475b3cd4f9a6d49e863b65cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: SampleScene
+  sceneToLoad: Tuto1
 --- !u!1 &615768423
 GameObject:
   m_ObjectHideFlags: 0
@@ -1557,6 +1583,7 @@ GameObject:
   - component: {fileID: 615768427}
   - component: {fileID: 615768426}
   - component: {fileID: 615768425}
+  - component: {fileID: 615768429}
   m_Layer: 5
   m_Name: Credit
   m_TagString: Untagged
@@ -1596,7 +1623,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 749b3825b5f06d44e81eec7631475550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  voiceClip: {fileID: 8300000, guid: 45a0dfe593fa3ad4c9c4c4f2e49330de, type: 3}
+  voiceClip: {fileID: 8300000, guid: 73932316317b1564eb52174b5b528648, type: 3}
   audioSource: {fileID: 501646888}
   hoverClip: {fileID: 8300000, guid: a2c34e3517146b74bbf05abb95492707, type: 3}
 --- !u!114 &615768426
@@ -1642,7 +1669,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 615768427}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 615768429}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &615768427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1681,6 +1720,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 615768423}
   m_CullTransparentMesh: 1
+--- !u!114 &615768429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615768423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 657744661aad0da48a18cfcafbb2ef0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myButton: {fileID: 615768426}
+  audioSource: {fileID: 501646888}
+  clickSound: {fileID: 8300000, guid: f962dc99859591541a95e1e772907e4c, type: 3}
 --- !u!1 &631993040
 GameObject:
   m_ObjectHideFlags: 0
@@ -2299,6 +2353,7 @@ GameObject:
   - component: {fileID: 1079840536}
   - component: {fileID: 1079840535}
   - component: {fileID: 1079840534}
+  - component: {fileID: 1079840538}
   m_Layer: 5
   m_Name: Tuto 2
   m_TagString: Untagged
@@ -2338,7 +2393,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 749b3825b5f06d44e81eec7631475550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  voiceClip: {fileID: 8300000, guid: d470a0232aa9afe49b21b4a15fc99bc3, type: 3}
+  voiceClip: {fileID: 8300000, guid: b625a7e90ed07a94eacfe7c8d6b4e49a, type: 3}
   audioSource: {fileID: 501646888}
   hoverClip: {fileID: 8300000, guid: a2c34e3517146b74bbf05abb95492707, type: 3}
 --- !u!114 &1079840535
@@ -2384,7 +2439,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1079840536}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1079840538}
+        m_TargetAssemblyTypeName: SceneButton, Assembly-CSharp
+        m_MethodName: LoadScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1079840536
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2423,6 +2490,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1079840532}
   m_CullTransparentMesh: 1
+--- !u!114 &1079840538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1079840532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f37aabc475b3cd4f9a6d49e863b65cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneToLoad: Tuto2
 --- !u!1 &1113050032
 GameObject:
   m_ObjectHideFlags: 0
@@ -2962,7 +3042,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 749b3825b5f06d44e81eec7631475550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  voiceClip: {fileID: 8300000, guid: e2d972346d3c41543962ca1d9132033f, type: 3}
+  voiceClip: {fileID: 8300000, guid: 0359317feb5eadb4b9ce88537a2d7f83, type: 3}
   audioSource: {fileID: 501646888}
   hoverClip: {fileID: 8300000, guid: a2c34e3517146b74bbf05abb95492707, type: 3}
 --- !u!1 &1347934099
@@ -3017,7 +3097,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 749b3825b5f06d44e81eec7631475550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  voiceClip: {fileID: 8300000, guid: d470a0232aa9afe49b21b4a15fc99bc3, type: 3}
+  voiceClip: {fileID: 8300000, guid: d7185c2bd3b916440bb270cddee9c82a, type: 3}
   audioSource: {fileID: 501646888}
   hoverClip: {fileID: 8300000, guid: a2c34e3517146b74bbf05abb95492707, type: 3}
 --- !u!114 &1347934102
@@ -3210,6 +3290,7 @@ GameObject:
   - component: {fileID: 1418074231}
   - component: {fileID: 1418074230}
   - component: {fileID: 1418074229}
+  - component: {fileID: 1418074233}
   m_Layer: 5
   m_Name: Scene 1
   m_TagString: Untagged
@@ -3249,7 +3330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 749b3825b5f06d44e81eec7631475550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  voiceClip: {fileID: 8300000, guid: e2d972346d3c41543962ca1d9132033f, type: 3}
+  voiceClip: {fileID: 8300000, guid: 5fe7329d8df5c8d4ea00463d345c638a, type: 3}
   audioSource: {fileID: 501646888}
   hoverClip: {fileID: 8300000, guid: a2c34e3517146b74bbf05abb95492707, type: 3}
 --- !u!114 &1418074230
@@ -3296,10 +3377,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11500000, guid: daa8282055193254a9111c8530071bef, type: 3}
-        m_TargetAssemblyTypeName: UnityEngine.Object, UnityEngine
-        m_MethodName: set_name
-        m_Mode: 5
+      - m_Target: {fileID: 1418074233}
+        m_TargetAssemblyTypeName: SceneButton, Assembly-CSharp
+        m_MethodName: LoadScene
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3346,6 +3427,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1418074227}
   m_CullTransparentMesh: 1
+--- !u!114 &1418074233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1418074227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f37aabc475b3cd4f9a6d49e863b65cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneToLoad: Niveau1
 --- !u!1 &1480394778
 GameObject:
   m_ObjectHideFlags: 0

@@ -358,7 +358,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 648260947638eee4ea98ee143ffa813d, type: 2}
     - target: {fileID: -8679921383154817045, guid: e03ea7dbb22fde34d8ebd16704c92ee1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.92618
+      value: 7.8237233
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e03ea7dbb22fde34d8ebd16704c92ee1, type: 3}
       propertyPath: m_LocalPosition.y
@@ -366,7 +366,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e03ea7dbb22fde34d8ebd16704c92ee1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -20.618004
+      value: 0.2193737
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e03ea7dbb22fde34d8ebd16704c92ee1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1502,6 +1502,9 @@ PrefabInstance:
       insertIndex: 27
       addedObject: {fileID: 6499583602993263844}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 65702495048144492, guid: e03ea7dbb22fde34d8ebd16704c92ee1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3973324668223142981}
     - targetCorrespondingSourceObject: {fileID: 4424396828587804706, guid: e03ea7dbb22fde34d8ebd16704c92ee1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7871872037395594950}
@@ -1743,6 +1746,19 @@ MonoBehaviour:
   frequency: 2.5
   minStartDelay: 1
   maxStartDelay: 5
+--- !u!1 &2901844937373817572 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 65702495048144492, guid: e03ea7dbb22fde34d8ebd16704c92ee1, type: 3}
+  m_PrefabInstance: {fileID: 2930718053360274568}
+  m_PrefabAsset: {fileID: 0}
+--- !u!81 &3973324668223142981
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2901844937373817572}
+  m_Enabled: 1
 --- !u!1 &3382245754763273147 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 458283123669593907, guid: e03ea7dbb22fde34d8ebd16704c92ee1, type: 3}
