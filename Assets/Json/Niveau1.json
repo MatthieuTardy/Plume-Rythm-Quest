@@ -4,46 +4,46 @@
   "musiqueClip": "Textes/MusiqueLV1",
   "actions": [
     {
-      "keyword": "Cygale",
-      "startTime": 0.5,
-      "endTime": 2.5,
-      "expectedClick": "Droite",
-      "requiredTaps": 3
-    },
-    {
-      "keyword": "Mouche",
-      "startTime": 11,
-      "endTime": 12.3,
-      "expectedClick": "Droite",
-      "requiredTaps": 3
-    },
-    {
-      "keyword": "Vermisseau",
-      "startTime": 12.3,
-      "endTime": 14,
-      "expectedClick": "Droite",
-      "requiredTaps": 3
-    },
-    {
-      "keyword": "Elle",
-      "startTime": 14.1,
-      "endTime": 16,
+      "keyword": "Corbeau",
+      "startTime": 0.8,
+      "endTime": 2 ,
       "expectedClick": "Gauche",
-      "requiredTaps": 2
+      "requiredTaps": 1
     },
     {
-      "keyword": "Fourmi",
-      "startTime": 17.5,
-      "endTime": 19.5,
+      "keyword": "Fromage",
+      "startTime": 4.7,
+      "endTime": 6.3,
       "expectedClick": "Droite",
-      "requiredTaps": 3
+      "requiredTaps": 1
     },
     {
-      "keyword": "Elle",
-      "startTime": 28.5,
-      "endTime": 30.5,
+      "keyword": "Corbeau",
+      "startTime": 13,
+      "endTime": 14.5,
       "expectedClick": "Gauche",
-      "requiredTaps": 2
+      "requiredTaps": 1
+    },
+    {
+      "keyword": "Corbeau",
+      "startTime": 23.9,
+      "endTime": 25 ,
+      "expectedClick": "Gauche",
+      "requiredTaps": 1
+    },
+    {
+      "keyword": "Fromage",
+      "startTime": 40,
+      "endTime": 41.5,
+      "expectedClick": "Droite",
+      "requiredTaps": 1
+    },
+    {
+      "keyword": "Corbeau",
+      "startTime": 42,
+      "endTime": 43.5,
+      "expectedClick": "Gauche",
+      "requiredTaps": 1
     }
   ]
 }

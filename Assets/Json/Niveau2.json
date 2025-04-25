@@ -1,0 +1,49 @@
+{
+  "tutoClip": "Textes/Tuto2",
+  "audioClip": "Textes/Niveau2",
+  "musiqueClip": "Textes/MusiqueLV1",
+  "actions": [
+    {
+      "keyword": "Ane",
+      "startTime": 0.4,
+      "endTime": 1.5,
+      "expectedClick": "Droite",
+      "requiredTaps": 3
+    },
+    {
+      "keyword": "Voleurs",
+      "startTime": 1.8,
+      "endTime": 3,
+      "expectedClick": "Gauche",
+      "requiredTaps": 2
+    },
+    {
+      "keyword": "L'ane",
+      "startTime": 16.2,
+      "endTime": 17,
+      "expectedClick": "Droite",
+      "requiredTaps": 3
+    },
+    {
+      "keyword": "Voleurs",
+      "startTime": 20.9,
+      "endTime": 22,
+      "expectedClick": "Gauche",
+      "requiredTaps": 2
+    },
+    {
+      "keyword": "Voleur",
+      "startTime": 37.4,
+      "endTime": 38.5,
+      "expectedClick": "Gauche",
+      "requiredTaps": 2
+    },
+    {
+      "keyword": "Baudet",
+      "startTime": 41.7,
+      "endTime": 42.4,
+      "expectedClick": "Droite",
+      "requiredTaps": 3
+    }
+  ]
+}
