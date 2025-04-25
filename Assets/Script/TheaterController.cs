@@ -6,8 +6,10 @@ public class NarratorManager : MonoBehaviour
 {
     public AudioSource narratorAudio;
     public AudioSource tutoAudio;
+    public AudioSource musiqueAudio;
     private AudioClip narratorClip;
     private AudioClip narratorTutoClip;
+    private AudioClip musiqueClip;
     public AudioSource sfxAudio; // Source pour les SFX
     public AudioClip badClickSFX;
     public AudioClip goodClickSFX;
@@ -18,12 +20,18 @@ public class NarratorManager : MonoBehaviour
     private bool hasFinished = false;
     bool tutoEnd;
 
-
+    public AudioClip Splus;
+    public AudioClip S;
+    public AudioClip A;
+    public AudioClip B;
+    public AudioClip C;
+    public AudioClip D;
 
     public TextAsset scriptJSON;
     private List<RhythmAction> actions;
     public string audioClip;
     public string tutoClip;
+    public string musicClip;
     private float timer;
 
     void Start()
@@ -34,14 +42,18 @@ public class NarratorManager : MonoBehaviour
         totalActions = actions.Count;
         tutoClip = list.tutoClip;
         audioClip = list.audioClip;
+        musicClip = list.musiqueClip;
 
 
         narratorTutoClip = Resources.Load<AudioClip>(tutoClip);
         narratorClip = Resources.Load<AudioClip>(audioClip);
+        musiqueClip = Resources.Load<AudioClip>(musicClip);
 
         tutoAudio.clip = narratorTutoClip;
         narratorAudio.clip = narratorClip;
+        musiqueAudio.clip = musiqueClip;
 
+        musiqueAudio.Play();
         tutoAudio.Play();
         totalActions = actions.Count;
         
@@ -69,14 +81,14 @@ public class NarratorManager : MonoBehaviour
             }
         }
 
-        // 📌 Si on clique hors de toute fenêtre d'action → erreur
+        // Si on clique hors de toute fenêtre d'action → erreur
         if ((Input.GetButtonDown("Fire1") || Input.GetButtonDown("Fire2")) && !isActionWindow)
         {
-            Debug.Log("❌ Clic dans le vide !");
+            Debug.Log("Clic dans le vide !");
             StartCoroutine(ClicDansLeVide());
         }
 
-        // 📢 Passer du tuto au narrateur
+        // Passer du tuto au narrateur
         if ((tutoAudio.time >= tutoAudio.clip.length || Input.GetButtonDown("Fire1")) && !tutoEnd)
         {
             tutoAudio.Stop();
@@ -176,23 +188,41 @@ public class NarratorManager : MonoBehaviour
     void EvaluatePerformance()
     {
         float accuracy = (float)successCount / totalActions * 100f;
-        string rank = CalculateRank(accuracy);
-
-        Debug.Log($"Fin du niveau !");
-        Debug.Log($"Réussites : {successCount} / {totalActions}");
-        Debug.Log($"Fails : {failCount}");
-        Debug.Log($"Précision : {accuracy:F1}%");
-        Debug.Log($"Rank : {rank}");
+        CalculateRank(accuracy);
     }
 
-    string CalculateRank(float accuracy)
+    void CalculateRank(float accuracy)
     {
-        if (accuracy == 100f) return "S+";
-        if (accuracy >= 85f) return "S";
-        if (accuracy >= 75f) return "A";
-        if (accuracy >= 50f) return "B";
-        if (accuracy >= 30f) return "C";
-        return "D";
+        if (accuracy == 100f) 
+        {
+            narratorAudio.clip = Splus;
+            narratorAudio.Play();
+        }
+        if (accuracy >= 85f)
+        {
+            narratorAudio.clip = S;
+            narratorAudio.Play();
+        }
+        if (accuracy >= 75f)
+        {
+            narratorAudio.clip = A;
+            narratorAudio.Play();
+        }
+        if (accuracy >= 50f)
+        {
+            narratorAudio.clip = B;
+            narratorAudio.Play();
+        }
+        if (accuracy >= 30f)
+        {
+            narratorAudio.clip = C;
+            narratorAudio.Play();
+        }
+        else
+        {
+            narratorAudio.clip = D;
+            narratorAudio.Play();
+        }
     }
 }
 
@@ -216,6 +246,7 @@ public class RhythmActionList
 {
     public string tutoClip; // ex: "Textes/Tuto1" (sans .mp3)
     public string audioClip; // ex: "Textes/Niveau1" (sans .mp3)
+    public string musiqueClip; // ex: "Textes/MusiqueLV1" (sans .mp3)
     public List<RhythmAction> actions;
 }
 
