@@ -3,13 +3,18 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
-    [Header("Panneaux")]
+    [Header("Panneaux principaux")]
     public GameObject mainMenuPanel;
     public GameObject jouerPanel;
     public GameObject optionsPanel;
+
+    [Header("Panneaux Mondes")]
+    public GameObject monde1Panel;
+    public GameObject monde2Panel;
 
     [Header("Boutons Principaux")]
     public Button buttonJouer;
@@ -21,10 +26,16 @@ public class UIManager : MonoBehaviour
     public Button buttonChangerTouche2;
     public Button buttonBack;
 
+    [Header("Boutons Mondes")]
+    public Button buttonMonde1;
+    public Button buttonMonde2;
+
     [Header("Sélections par défaut")]
     public GameObject mainFirstSelect;
     public GameObject jouerFirstSelect;
     public GameObject optionsFirstSelect;
+    public GameObject monde1FirstSelect;
+    public GameObject monde2FirstSelect;
 
     [Header("Audio")]
     public AudioSource audioSource;
@@ -38,9 +49,12 @@ public class UIManager : MonoBehaviour
 
     private GameObject currentPanel;
 
+    // ?? Nouvelle pile pour garder l'historique
+    private Stack<(GameObject panel, GameObject firstSelect)> panelHistory = new Stack<(GameObject, GameObject)>();
+
     void Start()
     {
-        // Lier les événements des boutons
+        // Boutons principaux
         buttonJouer.onClick.AddListener(OnClickJouer);
         buttonOptions.onClick.AddListener(OnClickOptions);
         buttonQuitter.onClick.AddListener(OnClickQuitter);
@@ -48,17 +62,20 @@ public class UIManager : MonoBehaviour
         buttonChangerTouche2.onClick.AddListener(OnClickChangerTouche2);
         buttonBack.onClick.AddListener(OnClickBack);
 
-        // Lier le bouton Cancel
+        // Boutons Monde
+        buttonMonde1.onClick.AddListener(OnClickMonde1);
+        buttonMonde2.onClick.AddListener(OnClickMonde2);
+
+        // Cancel action
         cancelAction.action.Enable();
         cancelAction.action.performed += OnCancel;
 
-        // Activer le menu principal au démarrage
-        ShowPanel(mainMenuPanel, mainFirstSelect);
+        // Panel de départ
+        ShowPanel(mainMenuPanel, mainFirstSelect, false);
     }
 
     private void OnDestroy()
     {
-        // Clean listener
         cancelAction.action.performed -= OnCancel;
     }
 
@@ -70,20 +87,21 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    void ShowPanel(GameObject panelToShow, GameObject buttonToSelect)
+    // ?? ShowPanel avec option pour empiler ou pas
+    void ShowPanel(GameObject panelToShow, GameObject buttonToSelect, bool addToHistory = true)
     {
-        // Désactive tous les panneaux
-        mainMenuPanel.SetActive(false);
-        jouerPanel.SetActive(false);
-        optionsPanel.SetActive(false);
+        if (addToHistory && currentPanel != null && currentPanel != panelToShow)
+        {
+            panelHistory.Push((currentPanel, EventSystem.current.currentSelectedGameObject));
+        }
 
-        // Active le panneau demandé
+        CloseAllPanels();
         panelToShow.SetActive(true);
         currentPanel = panelToShow;
 
-        // Focus UI
         EventSystem.current.SetSelectedGameObject(null);
-        EventSystem.current.SetSelectedGameObject(buttonToSelect);
+        if (buttonToSelect != null)
+            EventSystem.current.SetSelectedGameObject(buttonToSelect);
     }
 
     void PlayClick()
@@ -92,15 +110,20 @@ public class UIManager : MonoBehaviour
             audioSource.PlayOneShot(clickSound);
     }
 
-    // --- Actions des boutons principaux ---
+    void CloseAllPanels()
+    {
+        mainMenuPanel.SetActive(false);
+        jouerPanel.SetActive(false);
+        optionsPanel.SetActive(false);
+        monde1Panel.SetActive(false);
+        monde2Panel.SetActive(false);
+    }
+
+    // --- Boutons principaux ---
     public void OnClickJouer()
     {
         PlayClick();
-        // Option 1 : affiche le menu de sélection (jouerPanel)
         ShowPanel(jouerPanel, jouerFirstSelect);
-
-        // Option 2 : Lancer directement une scène (décommente cette ligne si tu veux)
-        // LoadSceneByName("NomDeTaScene");
     }
 
     public void OnClickOptions()
@@ -115,7 +138,7 @@ public class UIManager : MonoBehaviour
         Application.Quit();
     }
 
-    // --- Boutons de remapping ---
+    // --- Rebinding ---
     public void OnClickChangerTouche1()
     {
         PlayClick();
@@ -128,14 +151,36 @@ public class UIManager : MonoBehaviour
         rebindmanager.StartRebindAction2();
     }
 
-    // --- Retour au menu principal ---
+    // --- Retour contextuel ---
     public void OnClickBack()
     {
         PlayClick();
-        ShowPanel(mainMenuPanel, mainFirstSelect);
+
+        if (panelHistory.Count > 0)
+        {
+            var (previousPanel, previousSelect) = panelHistory.Pop();
+            ShowPanel(previousPanel, previousSelect, false);
+        }
+        else
+        {
+            ShowPanel(mainMenuPanel, mainFirstSelect, false);
+        }
     }
 
-    // --- Changer de scène (appelable via OnClick) ---
+    // --- Navigation vers Mondes ---
+    public void OnClickMonde1()
+    {
+        PlayClick();
+        ShowPanel(monde1Panel, monde1FirstSelect);
+    }
+
+    public void OnClickMonde2()
+    {
+        PlayClick();
+        ShowPanel(monde2Panel, monde2FirstSelect);
+    }
+
+    // --- Changement de scène ---
     public void LoadSceneByName(string sceneName)
     {
         PlayClick();
