@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using UnityEngine.InputSystem; // 🎯 Nouveau Input System
 
@@ -38,6 +41,12 @@ public class NarratorManager : MonoBehaviour
     public string musicClip;
     private float timer;
 
+    [Header("UI Fin de Niveau")]
+    public GameObject panelFin;
+    public Button buttonRecommencer;
+    public Button buttonSuite;
+    public GameObject panelFinFirstSelect;
+
     [Header("Input System")]
     public InputActionReference leftClickAction;
     public InputActionReference rightClickAction;
@@ -45,6 +54,7 @@ public class NarratorManager : MonoBehaviour
     void Start()
     {
         tutoEnd = false;
+        musiqueAudio.pitch = 1f;
 
         // Charger le script JSON
         RhythmActionList list = JsonUtility.FromJson<RhythmActionList>(scriptJSON.text);
@@ -69,6 +79,10 @@ public class NarratorManager : MonoBehaviour
         // Activer les actions du nouveau système
         leftClickAction.action.Enable();
         rightClickAction.action.Enable();
+        // UI fin désactivée au départ
+        panelFin.SetActive(false);
+        buttonRecommencer.onClick.AddListener(ReloadScene);
+        buttonSuite.onClick.AddListener(OnSuite);
     }
 
     void OnDisable()
@@ -86,12 +100,12 @@ public class NarratorManager : MonoBehaviour
 
         foreach (var action in actions)
         {
-            if (!action.hasTriggered && timer >= action.startTime && timer <= action.endTime)
+            if (!hasFinished && !action.hasTriggered && timer >= action.startTime && timer <= action.endTime)
             {
                 isActionWindow = true;
                 CheckInput(action);
             }
-            else if (!action.hasTriggered && timer > action.endTime)
+            else if (!hasFinished && !action.hasTriggered && timer > action.endTime)
             {
                 if (action.tapCount >= action.requiredTaps)
                     TriggerSuccess(action);
@@ -100,14 +114,14 @@ public class NarratorManager : MonoBehaviour
             }
         }
 
-        // ❌ Clique dans le vide
-        if ((leftClickAction.action.WasPerformedThisFrame() || rightClickAction.action.WasPerformedThisFrame()) && !isActionWindow)
+        // Clique dans le vide
+        if ((!hasFinished && leftClickAction.action.WasPerformedThisFrame() || !hasFinished && rightClickAction.action.WasPerformedThisFrame()) && !isActionWindow)
         {
             Debug.Log("Clic dans le vide !");
             StartCoroutine(ClicDansLeVide());
         }
 
-        // 🎓 Passage du tuto à la narration
+        // Passage du tuto à la narration
         if ((tutoAudio.time >= tutoAudio.clip.length || leftClickAction.action.WasPerformedThisFrame()) && !tutoEnd)
         {
             tutoAudio.Stop();
@@ -124,17 +138,25 @@ public class NarratorManager : MonoBehaviour
 
     void CheckInput(RhythmAction action)
     {
-        if (leftClickAction.action.WasPerformedThisFrame())
+        if (!hasFinished && leftClickAction.action.WasPerformedThisFrame())
         {
             if (action.expectedClick == "Gauche")
+            {
                 action.tapCount++;
+                PlayGoodSound();
+            }
             else
                 TriggerFail(action);
+            
+
         }
-        else if (rightClickAction.action.WasPerformedThisFrame())
+        else if (!hasFinished && rightClickAction.action.WasPerformedThisFrame())
         {
             if (action.expectedClick == "Droite")
+            {
                 action.tapCount++;
+                PlayGoodSound();
+            }
             else
                 TriggerFail(action);
         }
@@ -151,19 +173,15 @@ public class NarratorManager : MonoBehaviour
                 successCount--;
                 failCount++;
             }
-
-            narratorAudio.Pause();
-            narratorAudio.Play();
             yield return null;
         }
     }
 
     void TriggerSuccess(RhythmAction action)
     {
-        Debug.Log($"Réussi : {action.keyword} avec {action.expectedClick}");
         action.hasTriggered = true;
         successCount++;
-        PlayGoodSound();
+        
     }
 
     void TriggerFail(RhythmAction action)
@@ -186,6 +204,8 @@ public class NarratorManager : MonoBehaviour
     {
         if (badClickSFX != null && sfxAudio != null)
         {
+            sfxAudio.pitch = Random.Range(0.80f, 1.20f);
+            musiqueAudio.pitch -= 0.05f;
             sfxAudio.PlayOneShot(badClickSFX);
         }
     }
@@ -194,14 +214,25 @@ public class NarratorManager : MonoBehaviour
     {
         if (goodClickSFX != null && sfxAudio != null)
         {
+            sfxAudio.pitch = Random.Range(0.90f, 1.10f);
             sfxAudio.PlayOneShot(goodClickSFX);
         }
     }
-
+    void ShowFinPanel(GameObject panelToShow, GameObject buttonToSelect)
+    {
+        panelToShow.SetActive(true); // Affiche le panel de fin
+        EventSystem.current.SetSelectedGameObject(null); // Efface la sélection précédente
+        if (buttonToSelect != null)
+        {
+            EventSystem.current.SetSelectedGameObject(buttonToSelect); // Sélectionne le bouton passé en paramètre
+        }
+    }
     void EvaluatePerformance()
     {
         float accuracy = (float)successCount / totalActions * 100f;
         CalculateRank(accuracy);
+
+        ShowFinPanel(panelFin, buttonRecommencer.gameObject); // Pré-sélectionne le bouton "Recommencer"
     }
 
     void CalculateRank(float accuracy)
@@ -236,6 +267,18 @@ public class NarratorManager : MonoBehaviour
             narratorAudio.clip = D;
             narratorAudio.Play();
         }
+    }
+    // Recommencer la scène
+    void ReloadScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Recharge la scène actuelle
+    }
+
+    // 👉 Action du bouton "Suite"
+    void OnSuite()
+    {
+        Debug.Log("Continuer ou retourner au menu...");
+        // Exemple : SceneManager.LoadScene("NomDeLaSceneSuivante");
     }
 }
 

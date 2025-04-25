@@ -188,7 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 749b3825b5f06d44e81eec7631475550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  voiceClip: {fileID: 8300000, guid: d470a0232aa9afe49b21b4a15fc99bc3, type: 3}
+  voiceClip: {fileID: 8300000, guid: fcee557e833e0cb489a83ac47a0da3ff, type: 3}
   audioSource: {fileID: 0}
   hoverClip: {fileID: 8300000, guid: a2c34e3517146b74bbf05abb95492707, type: 3}
 --- !u!114 &317398673
@@ -557,7 +557,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 749b3825b5f06d44e81eec7631475550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  voiceClip: {fileID: 8300000, guid: e2d972346d3c41543962ca1d9132033f, type: 3}
+  voiceClip: {fileID: 8300000, guid: c9bace036831f7442afc570932bc5f35, type: 3}
   audioSource: {fileID: 0}
   hoverClip: {fileID: 8300000, guid: a2c34e3517146b74bbf05abb95492707, type: 3}
 --- !u!114 &953788802
@@ -1320,8 +1320,8 @@ MonoBehaviour:
   tutoAudio: {fileID: 1912381830}
   musiqueAudio: {fileID: 1912381832}
   sfxAudio: {fileID: 1912381830}
-  badClickSFX: {fileID: 8300000, guid: f9ca4c201b32632409ac14936c94fb4d, type: 3}
-  goodClickSFX: {fileID: 8300000, guid: 90fb414a1bfa0b14fb18ca967320381e, type: 3}
+  badClickSFX: {fileID: 8300000, guid: daffb9e09c80d55439c3bb58f964804a, type: 3}
+  goodClickSFX: {fileID: 8300000, guid: 63f9f6de8aa6c8644847c49f7550abd7, type: 3}
   Splus: {fileID: 8300000, guid: 44b0b8f8ddb600b44b3cdf1fa518c9c4, type: 3}
   S: {fileID: 8300000, guid: 2ee3b1412bfbb304b8f27f1b2399241e, type: 3}
   A: {fileID: 8300000, guid: c0afc29ea6dfe31479c93761350aa4c1, type: 3}
@@ -1332,6 +1332,10 @@ MonoBehaviour:
   audioClip: 
   tutoClip: 
   musicClip: 
+  panelFin: {fileID: 1231636694}
+  buttonRecommencer: {fileID: 953788802}
+  buttonSuite: {fileID: 317398673}
+  panelFinFirstSelect: {fileID: 953788799}
   leftClickAction: {fileID: 2358355112029290979, guid: 315beb2362e022344a984a2a44ef28a9, type: 3}
   rightClickAction: {fileID: 1362007030607491862, guid: 315beb2362e022344a984a2a44ef28a9, type: 3}
 --- !u!4 &1912381829
@@ -1361,7 +1365,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.449
   m_Pitch: 1
   Loop: 0
   Mute: 0
