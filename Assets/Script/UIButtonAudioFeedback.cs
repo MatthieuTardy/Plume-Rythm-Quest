@@ -14,13 +14,18 @@ public class UIButtonAudioFeedback : MonoBehaviour, ISelectHandler
     {
         if (audioSource == null) return;
 
-        // Jouer le son de sélection commun
+
+        if (audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+
+
         if (hoverClip != null)
         {
             audioSource.PlayOneShot(hoverClip);
         }
 
-        // Jouer la voix associée si dispo
         if (voiceClip != null)
         {
             audioSource.PlayOneShot(voiceClip);

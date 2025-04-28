@@ -107,6 +107,7 @@ public class UIManager : MonoBehaviour
     void PlayClick()
     {
         if (audioSource && clickSound)
+            audioSource.Stop();
             audioSource.PlayOneShot(clickSound);
     }
 

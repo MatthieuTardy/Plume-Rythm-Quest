@@ -16,6 +16,7 @@ public class ButtonSound : MonoBehaviour
     void PlaySound()
     {
         if (audioSource != null && clickSound != null)
+            audioSource.Stop();
             audioSource.PlayOneShot(clickSound);
     }
 }
